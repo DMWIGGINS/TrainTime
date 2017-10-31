@@ -20,6 +20,8 @@
     <!-- link to font to use in styling -->
     <link href="https://fonts.googleapis.com/css?family=Fascinate+Inline" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Merriweather|Contrail+One" rel="stylesheet">
+    <!-- Link to Moment.js -->
+    <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
     <!-- Link to firebase -->
     <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
     <script src="assets/javascript/train.js"></script>
@@ -31,9 +33,11 @@
 
 <body>
     <div class="container">
-        <div class="jumbotron">
-            <h1> WIGGINS CROSSING
-            </h1>
+        <div class="row">
+            <div class="jumbotron">
+                <h1> WIGGINS CROSSING
+                </h1>
+            </div>
         </div>
         <div class="row">
             <div class="panel panel-primary">
@@ -84,12 +88,12 @@
                     <br>
                     <div class="form-group">
                         Destination
-                        <input type="text" class="form-control" id="desstination">
+                        <input type="text" class="form-control" id="destination">
                     </div>
                     <br>
                     <div class="form-group">
                         First Train Time (HH:mm - military time)
-                        <input type="text" class="form-control" id="time">
+                        <input type="text" class="form-control" id="firsttime">
                     </div>
                     <br>
                     <div class="form-group">
@@ -97,7 +101,7 @@
                         <input type="text" class="form-control" id="frequency">
                     </div>
                     <br>
-                    <button type="button" class="btn btn-primary">Submit</button>
+                    <button type="button" class="btn btn-primary" id="submit">Submit</button>
 
                 </div>
             </div>
