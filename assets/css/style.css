@@ -1,14 +1,19 @@
 body {
-    background-image: url(../images/hazard.jpg);
+    background-image: url(../images/multitracks.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+
 }
 
 .jumbotron {
     text-align: center;
-    background-color: green;
-    /* background-color: #272b30; */
+    background-color: #272b30; 
+    
+    /*background-color: green; */
+      
     /* color: white;    */
     /* color: green; */
-    /* color: rgb(238, 238, 4); */
+     /*color: rgb(238, 238, 4); */
 }
 
 h1 {
@@ -24,10 +29,46 @@ h1 {
     border-width: 1px;
 }
 
-#image2 {
+#image5 {
     height: 100px;
     width: 175px;
     float: right;
+    border-style: solid;
+    border-color: grey;
+    border-width: 1px;
+}
+
+#image3 {
+    height: 100px;
+    width: 175px;
+    float: left;
+    border-style: solid;
+    border-color: grey;
+    border-width: 1px;
+}
+
+#image4 {
+    height: 100px;
+    width: 175px;
+    float: right;
+    border-style: solid;
+    border-color: grey;
+    border-width: 1px;
+}
+
+#image2 {
+    height: 100px;
+    width: 100px;
+    
+    border-style: solid;
+    border-color: grey;
+    border-width: 1px;
+}
+
+#image6 {
+    height: 100px;
+    width: 100px;
+   
     border-style: solid;
     border-color: grey;
     border-width: 1px;
