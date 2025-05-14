@@ -34,12 +34,10 @@ $(document).ready(function () {
 
         // store values in our database
         dataBase.ref().push({
-
             trainname: trainName,
             destination: destination,
             firsttime: firstTime,
             frequency: frequency
-
         });
     });
 
