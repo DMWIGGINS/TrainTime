@@ -39,6 +39,14 @@ $(document).ready(function () {
             firsttime: firstTime,
             frequency: frequency
         });
+
+        // clear values from form
+        $("#trainname").val('');
+        $("#destination").val('');
+        $("#firsttime").val('');
+        $("#frequency").val('');
+
+        
     });
 
     // anytime new data is added we create it's own object in firebase to store it
