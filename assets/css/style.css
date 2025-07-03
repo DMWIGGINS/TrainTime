@@ -39,10 +39,9 @@ h1 {
     border-width: 1px;
 }
 
-.responsive {
-    max-width: 100%;
-    height: auto;
-}
+
+
+
 
 @media (max-width: 452px) {
   #image1, #image3,
@@ -56,33 +55,13 @@ h1 {
     width: 80px;
     height: 80px;
   }
-
-  .panel-heading {
-  font-size: 1.3em;
-  white-space: normal;
-  text-align: center;
-  word-break: break-word;
+#traintable {
+    table-layout: fixed;
+    font-size: 10px;
+   
+}
+td {
+    text-align: center;
 }
 }
 
-@media (max-width: 420px) {
-  .panel-heading {
-    font-size: 1.1em;
-    padding: 12px;
-  }
-
-  .panel-body {
-    font-size: 1em;
-  }
-
-  .form-control {
-    font-size: 0.95em;
-  }
-}
-
-@media (max-width: 320px) {
-    
-  .panel-heading {
-    font-size: 1em;
-  }
-}

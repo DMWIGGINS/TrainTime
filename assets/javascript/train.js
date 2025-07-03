@@ -11,7 +11,7 @@ $(document).ready(function () {
     };
     firebase.initializeApp(config);
 
-    // variables for firebase databse, values in the form and for current time
+    // variables for firebase database, values in the form and for current time
     var dataBase = firebase.database();
     var minutesAway = 0;
     var trainName = "";
