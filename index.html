@@ -112,7 +112,44 @@
                         <input type="text" class="form-control" id="frequency">
                     </div>
                     <br>
-                    <button type="button" class="btn btn-success" id="submit">Submit</button>
+                    <button type="button" class="btn btn-success" id="submit">Add Train</button>
+                </div>
+            </div>
+        </div>
+          <div class="row">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    Edit or Delete Train
+                </div>
+                <div class="panel-body">
+                    <br>
+                    <div class="form-group">
+                       Train Name
+                        <br>
+                        <select class="form-control" id="dropdown" name="dropdown">
+                <option value="" selected disabled>Select Train</Option>
+
+                        
+                        </select>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        Destination
+                        <input type="text" class="form-control" id="existingdestination">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        First Train Time (HH:mm - military time)
+                        <input type="text" class="form-control" id="existingfirsttime">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        Frequency (min)
+                        <input type="text" class="form-control" id="existingfrequency">
+                    </div>
+                    <br>
+                    <button type="button" class="btn btn-warning" id="edit">Edit Train</button>
+                    <button type="button" class="btn btn-danger" id="delete">Delete Train</button>
                 </div>
             </div>
         </div>
