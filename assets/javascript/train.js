@@ -21,6 +21,20 @@ $(document).ready(function () {
     var nextArrival = 0;
     var currentTime = "";
     var t = 0;
+    var trainKey = "";
+
+
+    // Replace spaces with underscores
+    // Remove anything not a-z, 0-9, or underscore
+    function formatKey(trainName) {
+        return trainName 
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, "_")
+        .replace(/[^a-z0-9_]/g, "");
+        
+    }
+
 
     // when submit button is clicked this function will be carried out
     $("#submit").on("click", function (event) {
@@ -32,33 +46,55 @@ $(document).ready(function () {
         firstTime = $("#firsttime").val().trim();
         frequency = $("#frequency").val().trim();
 
+         // Validate required fields
+    if (!trainName || !destination || !firstTime || !frequency) {
+        alert("Please fill in all fields before adding a train.");
+        return;
+    }
+
+        
+        var trainKey = formatKey(trainName);
+        console.log("TrainKey outside of function is " + trainKey);
         // store values in our database
-        dataBase.ref().push({
+
+        dataBase.ref("trains/" + trainKey).once("value", function(snapshot) {
+            if (snapshot.exists()) {
+                alert("A train with that name already exists.");
+            } else {
+        dataBase.ref("trains/" + trainKey).set({
             trainname: trainName,
             destination: destination,
             firsttime: firstTime,
-            frequency: frequency
-        });
-
+            frequency: frequency        
+        
+        }, function(error) {
+            if (error) {
+            alert("Train could not be added. Please try again.");
+            } else {
+            alert("Train added successfully!");
+        
+    
         // clear values from form
         $("#trainname").val('');
         $("#destination").val('');
         $("#firsttime").val('');
         $("#frequency").val('');
 
-        
-    });
-
+    }
+              });
+            }
+           });
+        });
     // anytime new data is added we create it's own object in firebase to store it
-    dataBase.ref().on("child_added", function (childSnapshot) {
+    dataBase.ref("trains").on("child_added", function (childSnapshot) {
 
         // Log everything that's coming out of snapshot
         console.log(childSnapshot.val().trainname);
         console.log(childSnapshot.val().destination);
         console.log(childSnapshot.val().firsttime);
         console.log(childSnapshot.val().frequency);
-
-        // get current time
+        
+      // get current time
         currentTime = moment().format('HH:mm');
         var currentTimeHour = moment().format('HH');
         var currentTimeMin = moment().format('mm');
@@ -112,6 +148,13 @@ $(document).ready(function () {
         // retrieve trainname from database and append to position in table row
         var td1 = $("<td>").text(childSnapshot.val().trainname);
         $(newTableRow).append(td1);
+        
+        //add trainname to the dropdown list in the edit/delete section
+        var option = $("<option>").text(childSnapshot.val().trainname);
+        $(option).attr("value", childSnapshot.val().trainname )
+        $("#dropdown").append(option);
+
+         console.log("Value is " + $("#dropdown").val());
 
         // retrieve destination from database and append to position in table row
         var td2 = $("<td>").text(childSnapshot.val().destination);
@@ -132,4 +175,84 @@ $(document).ready(function () {
         // Append new table row to traintable in DOM
         $("#traintable").append(newTableRow);
     });
+
+
+     $("#dropdown").on("input", function (event) {
+       
+        var selectedtrainName = $(this).val();
+        console.log("TrainName is " + selectedtrainName);
+       dataBase.ref("trains/" ).orderByChild("trainname").equalTo(selectedtrainName).once("value", function(snapshot) {
+        if (snapshot.exists()) {
+            snapshot.forEach(function(childSnapshot) {
+                var trainData = childSnapshot.val();
+                console.log("TrainData is " + trainData);
+                // Fill in the form fields
+                $("#existingdestination").val(trainData.destination);
+                $("#existingfirsttime").val(trainData.firsttime);
+                $("#existingfrequency").val(trainData.frequency);
+
+                // Optional: store key for edit/delete buttons
+                $("#edit").data("key", childSnapshot.key);
+                $("#delete").data("key", childSnapshot.key);
+
+         });
+        } else {
+            console.log("No train found with that name.");
+        }
+    });
+       
+           
+        });
+
+$("#edit").on("click", function () {
+    var key = $(this).data("key");
+
+       
+    
+        trainName =  $("#dropdown").val().trim();
+        destination =  $("#existingdestination").val().trim();
+        firstTime = $("#existingfirsttime").val().trim();
+        frequency = $("#existingfrequency").val().trim();
+    
+    
+      // Validate required fields
+    if (!destination || !firstTime || !frequency) {
+        alert("Please fill in all fields before editing a train.");
+        return;
+    }
+
+    var updatedData = {
+        trainname: trainName,
+        destination: destination,
+        firsttime: firstTime,
+        frequency: frequency
+    };
+
+    dataBase.ref("trains").child(key).update(updatedData, function(error) {
+        if (error) {
+            alert("Update failed.");
+        } else {
+            alert("Train updated successfully.");
+            location.reload(); // Refresh to reflect changes
+        }
+    });
 });
+
+$("#delete").on("click", function () {
+    var key = $(this).data("key");
+
+    if (confirm("Are you sure you want to delete this train?")) {
+        dataBase.ref("trains").child(key).remove(function(error) {
+            if (error) {
+                alert("Delete failed.");
+            } else {
+                alert("Train deleted successfully.");
+                location.reload(); // Refresh to reflect deletion
+            }
+        });
+    }
+});
+
+
+
+     });
