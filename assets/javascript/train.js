@@ -21,9 +21,21 @@ $(document).ready(function () {
     var nextArrival = 0;
     var currentTime = "";
     var t = 0;
+    var trainKey = "";
 
 
-    
+    // Replace spaces with underscores
+    // Remove anything not a-z, 0-9, or underscore
+    function formatKey(trainName) {
+        return trainName 
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, "_")
+        .replace(/[^a-z0-9_]/g, "");
+        
+    }
+
+
     // when submit button is clicked this function will be carried out
     $("#submit").on("click", function (event) {
         event.preventDefault();
@@ -34,33 +46,45 @@ $(document).ready(function () {
         firstTime = $("#firsttime").val().trim();
         frequency = $("#frequency").val().trim();
 
+         // Validate required fields
+    if (!trainName || !destination || !firstTime || !frequency) {
+        alert("Please fill in all fields before adding a train.");
+        return;
+    }
 
-        function formatKey(name) {
-        return name
-        .toLowerCase()
-        .trim()
-        .replace(/\s+/g, "_")   // Replace spaces with underscores
-        .replace(/[^a-z0-9_]/g, ""); // Remove anything not a-z, 0-9, or underscore
-}
-        var trainKey = trainName.replace(/\s+/g, " ").toLowerCase();
-
+        
+        var trainKey = formatKey(trainName);
+        console.log("TrainKey outside of function is " + trainKey);
         // store values in our database
+
+        dataBase.ref("trains/" + trainKey).once("value", function(snapshot) {
+            if (snapshot.exists()) {
+                alert("A train with that name already exists.");
+            } else {
         dataBase.ref("trains/" + trainKey).set({
             trainname: trainName,
             destination: destination,
             firsttime: firstTime,
-            frequency: frequency
-        });
-
+            frequency: frequency        
+        
+        }, function(error) {
+            if (error) {
+            alert("Train could not be added. Please try again.");
+            } else {
+            alert("Train added successfully!");
+        
+    
         // clear values from form
         $("#trainname").val('');
         $("#destination").val('');
         $("#firsttime").val('');
         $("#frequency").val('');
 
-        
-    });
-
+    }
+              });
+            }
+           });
+        });
     // anytime new data is added we create it's own object in firebase to store it
     dataBase.ref("trains").on("child_added", function (childSnapshot) {
 
@@ -69,6 +93,7 @@ $(document).ready(function () {
         console.log(childSnapshot.val().destination);
         console.log(childSnapshot.val().firsttime);
         console.log(childSnapshot.val().frequency);
+        
       // get current time
         currentTime = moment().format('HH:mm');
         var currentTimeHour = moment().format('HH');
@@ -156,11 +181,11 @@ $(document).ready(function () {
        
         var selectedtrainName = $(this).val();
         console.log("TrainName is " + selectedtrainName);
-       dataBase.ref("trains").orderByChild("trainname").equalTo(selectedtrainName).once("value", function(snapshot) {
+       dataBase.ref("trains/" ).orderByChild("trainname").equalTo(selectedtrainName).once("value", function(snapshot) {
         if (snapshot.exists()) {
             snapshot.forEach(function(childSnapshot) {
                 var trainData = childSnapshot.val();
-                
+                console.log("TrainData is " + trainData);
                 // Fill in the form fields
                 $("#existingdestination").val(trainData.destination);
                 $("#existingfirsttime").val(trainData.firsttime);
@@ -181,11 +206,26 @@ $(document).ready(function () {
 
 $("#edit").on("click", function () {
     var key = $(this).data("key");
+
+       
+    
+        trainName =  $("#dropdown").val().trim();
+        destination =  $("#existingdestination").val().trim();
+        firstTime = $("#existingfirsttime").val().trim();
+        frequency = $("#existingfrequency").val().trim();
+    
+    
+      // Validate required fields
+    if (!destination || !firstTime || !frequency) {
+        alert("Please fill in all fields before editing a train.");
+        return;
+    }
+
     var updatedData = {
-        trainname: $("#dropdown").val(),
-        destination: $("#existingdestination").val(),
-        firsttime: $("#existingfirsttime").val(),
-        frequency: $("#existingfrequency").val()
+        trainname: trainName,
+        destination: destination,
+        firsttime: firstTime,
+        frequency: frequency
     };
 
     dataBase.ref("trains").child(key).update(updatedData, function(error) {
