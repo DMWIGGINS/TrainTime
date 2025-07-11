@@ -10,6 +10,8 @@
     <link rel="stylesheet" type="text/css" href="assets/css/reset.css">
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!-- bootstap with slate bootswatch theme -->
     <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/slate/bootstrap.min.css" rel="stylesheet" integrity="sha384-RpX8okQqCyUNG7PlOYNybyJXYTtGQH+7rIKiVvg1DLg6jahLEk47VvpUyS+E2/uJ" crossorigin="anonymous">
     <!-- link to font to use in styling -->
@@ -24,8 +26,33 @@
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
 
 </head>
+<!-- Confirm Delete Modal -->
+<div id="confirmModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-primary">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title" id="confirmLabel">Confirm Delete</h4>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete this train?</p>
+      </div>
+      <div class="modal-footer bg-primary">
+        <button id="confirmDeleteBtn" type="button" class="btn btn-danger">Yes, Delete</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <body>
+    <div id="message" class="alert" role="alert" style="display: none;">
+    </div>
+    
+
+
     <div class="container">
         <div class="row">
             <div class="jumbotron">
@@ -58,9 +85,8 @@
             </div>
         
 
-
      <div class="row">
-            <div class="panel panel-primary">
+            <div class="panel panel-primary table-responsive">
                 <div class="panel-heading">
                     Current Train Schedule
                 </div>
@@ -117,7 +143,6 @@
                     <button type="button" class="btn btn-success" id="submit">Add Train</button>
                 </div>
             </div>
-            <div id="message" class="alert" style="display: none;"></div>
 
         </div>
           <div class="row">
