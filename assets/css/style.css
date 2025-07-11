@@ -57,11 +57,36 @@ h1 {
   }
 #traintable {
     table-layout: fixed;
-    font-size: 10px;
+    font-size: 10px; 
    
 }
 td {
     text-align: center;
 }
+tr {
+  text-align: center;
 }
+}
+
+#message {
+  position: fixed;
+  top: -100px; /* start hidden above screen */
+  left: 0;
+  width: 100%;
+  z-index: 1050; /* higher than Bootstrap navbars etc */
+  text-align: center;
+  padding: 15px;
+  font-weight: bold;
+  font-size: 16px;
+  transition: top 0.5s ease-in-out;
+  display: none;
+}
+
+/* When shown */
+#message.show {
+  top: 0;
+}
+
+
+
 

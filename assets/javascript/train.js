@@ -32,8 +32,33 @@ $(document).ready(function () {
         .trim()
         .replace(/\s+/g, "_")
         .replace(/[^a-z0-9_]/g, "");
-        
+
     }
+
+    function showAlert(message, type = 'success') {
+  $('#message')
+    .removeClass('alert-success alert-danger alert-warning alert-info show')
+    .addClass('alert alert-' + type)
+    .html(message)
+    .show(); // ensure it's visible
+
+  setTimeout(() => {
+    $('#message').addClass('show');
+  }, 10); // allow DOM to apply display before animation
+
+  setTimeout(() => {
+    $('#message').removeClass('show');
+  }, 4000); // hide after 4 seconds
+
+  setTimeout(() => {
+    $('#message').fadeOut();
+  }, 4500); // then fade it out completely
+}
+
+
+
+        
+    
 
 
     // when submit button is clicked this function will be carried out
@@ -48,18 +73,18 @@ $(document).ready(function () {
 
          // Validate required fields
     if (!trainName || !destination || !firstTime || !frequency) {
-        alert("Please fill in all fields before adding a train.");
-        return;
+        showAlert("Please fill in all fields before adding a train.", "danger");
+        
     }
 
-        
         var trainKey = formatKey(trainName);
         console.log("TrainKey outside of function is " + trainKey);
         // store values in our database
 
         dataBase.ref("trains/" + trainKey).once("value", function(snapshot) {
             if (snapshot.exists()) {
-                alert("A train with that name already exists.");
+                showAlert("A train with that name already exists.", "warning");
+                
             } else {
         dataBase.ref("trains/" + trainKey).set({
             trainname: trainName,
@@ -69,16 +94,20 @@ $(document).ready(function () {
         
         }, function(error) {
             if (error) {
-            alert("Train could not be added. Please try again.");
+            showAlert("Train could not be added. Please try again.", "danger");
             } else {
-            alert("Train added successfully!");
+            showAlert("Train added successfully!", "success");
+
+            //remove focus from submit button when successfull
+            $("#submit").blur();
         
-    
         // clear values from form
         $("#trainname").val('');
         $("#destination").val('');
         $("#firsttime").val('');
         $("#frequency").val('');
+
+        
 
     }
               });
@@ -143,18 +172,20 @@ $(document).ready(function () {
         console.log(minutesAway);
 
         // create a new row in the table for the new train info
-        var newTableRow = $("<tr>");
-
+        
+        var newTableRow = $("<tr>").attr("data-key", childSnapshot.key);
+        console.log("How may times will this happen?" + trainname);
+       
         // retrieve trainname from database and append to position in table row
         var td1 = $("<td>").text(childSnapshot.val().trainname);
         $(newTableRow).append(td1);
-        
-        //add trainname to the dropdown list in the edit/delete section
+
+         //add trainname to the dropdown list in the edit/delete section
         var option = $("<option>").text(childSnapshot.val().trainname);
         $(option).attr("value", childSnapshot.val().trainname )
         $("#dropdown").append(option);
 
-         console.log("Value is " + $("#dropdown").val());
+        console.log("Value is " + $("#dropdown").val());
 
         // retrieve destination from database and append to position in table row
         var td2 = $("<td>").text(childSnapshot.val().destination);
@@ -173,15 +204,28 @@ $(document).ready(function () {
         $(newTableRow).append(td5);
 
         // Append new table row to traintable in DOM
-        $("#traintable").append(newTableRow);
+        $("#traintable").append(newTableRow);    
     });
+
+    //listener for deleted data
+    dataBase.ref("trains").on("child_removed", function (oldChildSnapshot) {
+    const key = oldChildSnapshot.key;
+     // Remove row from table
+    $('tr[data-key="' + key + '"]').remove();
+    console.log("Train with key", key, "has been removed from table and dropdown.");
+    });
+
+
+   
 
 
      $("#dropdown").on("input", function (event) {
        
         var selectedtrainName = $(this).val();
+        
         console.log("TrainName is " + selectedtrainName);
-       dataBase.ref("trains/" ).orderByChild("trainname").equalTo(selectedtrainName).once("value", function(snapshot) {
+       
+       dataBase.ref("trains/").orderByChild("trainname").equalTo(selectedtrainName).once("value", function(snapshot) {
         if (snapshot.exists()) {
             snapshot.forEach(function(childSnapshot) {
                 var trainData = childSnapshot.val();
@@ -191,13 +235,13 @@ $(document).ready(function () {
                 $("#existingfirsttime").val(trainData.firsttime);
                 $("#existingfrequency").val(trainData.frequency);
 
-                // Optional: store key for edit/delete buttons
+                //Optional: store key for edit/delete buttons
                 $("#edit").data("key", childSnapshot.key);
                 $("#delete").data("key", childSnapshot.key);
 
          });
         } else {
-            console.log("No train found with that name.");
+           showAlert("No train found with that name.", "warning");
         }
     });
        
@@ -210,14 +254,14 @@ $("#edit").on("click", function () {
        
     
         trainName =  $("#dropdown").val().trim();
-        destination =  $("#existingdestination").val().trim();
+        destination = $("#existingdestination").val().trim();
         firstTime = $("#existingfirsttime").val().trim();
         frequency = $("#existingfrequency").val().trim();
     
     
       // Validate required fields
     if (!destination || !firstTime || !frequency) {
-        alert("Please fill in all fields before editing a train.");
+        showAlert("Please fill in all fields before editing a train.", "warning");
         return;
     }
 
@@ -228,31 +272,83 @@ $("#edit").on("click", function () {
         frequency: frequency
     };
 
-    dataBase.ref("trains").child(key).update(updatedData, function(error) {
+    dataBase.ref("trains/" + key).update(updatedData, function(error) {
         if (error) {
-            alert("Update failed.");
+            showAlert("Update failed.", "danger");
         } else {
-            alert("Train updated successfully.");
-            location.reload(); // Refresh to reflect changes
-        }
+          
+    var row = $('tr[data-key="' + key + '"]');
+    row.find("td:eq(0)").text(trainName);
+    row.find("td:eq(1)").text(destination);
+    row.find("td:eq(2)").text(frequency);
+
+
+     
+    // Recalculate arrival time and minutes away
+    let firstTrainTime = moment(firstTime, "HH:mm");
+    let nextArrivalTime = firstTrainTime;
+
+    while (moment().isAfter(nextArrivalTime)) {
+        nextArrivalTime = moment(nextArrivalTime).add(parseInt(frequency), "minutes");
+    }
+
+    let minutesAway = moment(nextArrivalTime).diff(moment(), "minutes");
+    if (minutesAway < 0) minutesAway += 1440;
+
+    row.find("td:eq(3)").text(nextArrivalTime.format("h:mm a"));
+    row.find("td:eq(4)").text(minutesAway);
+
+     // clear values from form
+        $("#dropdown").val('');
+        $("#existingdestination").val('');
+        $("#existingfirsttime").val('');
+        $("#existingfrequency").val('');
+
+        
+      showAlert("Train updated successfully.", "success");
+
+      // remove focus from edit button when action is successfull
+      $("#edit").blur();
+
+}
+        });
     });
-});
+
+let deleteKey = ""; // global var to store key temporarily
 
 $("#delete").on("click", function () {
-    var key = $(this).data("key");
+     deleteKey = $(this).data("key");
+    $("#confirmModal").modal("show");
 
-    if (confirm("Are you sure you want to delete this train?")) {
-        dataBase.ref("trains").child(key).remove(function(error) {
-            if (error) {
-                alert("Delete failed.");
-            } else {
-                alert("Train deleted successfully.");
-                location.reload(); // Refresh to reflect deletion
-            }
-        });
-    }
 });
 
+$("#confirmDeleteBtn").on("click", function() {
+    if (!deleteKey) return;
+
+    dataBase.ref("trains/" + deleteKey).remove(function (error) {
+        if (error) {
+                showAlert("Delete failed.", "danger");
+            } else {
+                showAlert("Train deleted successfully.", "success");
+
+                // remove focus from delete button when action is successfull
+                $("#delete").blur();
+
+              
+            }
+});
+    $("#confirmModal").modal("hide"); // close modal
+  deleteKey = ""; // reset    
+   
+
+                // clear values from form
+        $("#dropdown").val('');
+        $("#existingdestination").val('');
+        $("#existingfirsttime").val('');
+        $("#existingfrequency").val('');
 
 
-     });
+
+             }); 
+      
+        });
