@@ -1,10 +1,26 @@
+
+
+
+
+
+
 body {
-    background-image: url(../images/multitracks.jpg);
+
+  /* background-image: url(../images/multitracks.jpg); */
+  /* background-image: url(../images/gonzalo-facello-1kljXlocYgo-unsplash.jpg); */
+  /* background-image: url(../images/julia-taubitz-svoPargqyuM-unsplash.jpg); */
+  /* background-image: url(../images/markus-winkler-k0uFFblQfgI-unsplash.jpg); */
+  /* background-image: url(../images/nikola-duza-RYQWL3C9kow-unsplash.jpg); */
+  /* background-image: url(../images/natalia-y-f6j5Dol1H_I-unsplash.jpg); */
+  /* background-image: url(../images/ranit-sarkar-u2PygwDnNiE-unsplash.jpg); */
+  background-image: url(../images/resized-sgc-sLIAshJEmu0-unsplash.JPG);
+  /* background-image: url(../images/thowei-wang-t1SUMYgqRng-unsplash.jpg); */
+  /* background-image: url(../images/tmike-enerio-2IkxeDKaZdY-unsplash.jpg); */
+
     background-size: cover;
     background-repeat: no-repeat;
 }
-
-.jumbotron {
+    .jumbotron {
     text-align: center;
     background-color: #272b30; 
 }
@@ -40,7 +56,24 @@ h1 {
 }
 
 
+#message {
+  position: fixed;
+  top: -100px; /* start hidden above screen */
+  left: 0;
+  width: 100%;
+  z-index: 1050; /* higher than Bootstrap navbars etc */
+  text-align: center;
+  padding: 15px;
+  font-weight: bold;
+  font-size: 16px;
+  transition: top 0.5s ease-in-out;
+  display: none;
+}
 
+/* When shown */
+#message.show {
+  top: 0;
+}
 
 
 @media (max-width: 452px) {
@@ -63,29 +96,14 @@ h1 {
 td {
     text-align: center;
 }
-tr {
-  text-align: center;
-}
+
+ tr {
+  text-align: center; 
+} 
+
 }
 
-#message {
-  position: fixed;
-  top: -100px; /* start hidden above screen */
-  left: 0;
-  width: 100%;
-  z-index: 1050; /* higher than Bootstrap navbars etc */
-  text-align: center;
-  padding: 15px;
-  font-weight: bold;
-  font-size: 16px;
-  transition: top 0.5s ease-in-out;
-  display: none;
-}
 
-/* When shown */
-#message.show {
-  top: 0;
-}
 
 
 
