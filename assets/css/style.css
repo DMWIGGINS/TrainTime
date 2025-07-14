@@ -4,25 +4,22 @@
 
 
 
-body {
+body { 
+ 
+  /* image ratio is 16:9 */
+   background-image: url(../images/outdoors_railroad_tracks_foliage_hd-wallpaper-936158.JPG); 
+   background-size: cover;
+   background-repeat: no-repeat;
+   background-position: center;
 
-  /* background-image: url(../images/multitracks.jpg); */
-  /* background-image: url(../images/gonzalo-facello-1kljXlocYgo-unsplash.jpg); */
-  /* background-image: url(../images/julia-taubitz-svoPargqyuM-unsplash.jpg); */
-  /* background-image: url(../images/markus-winkler-k0uFFblQfgI-unsplash.jpg); */
-  /* background-image: url(../images/nikola-duza-RYQWL3C9kow-unsplash.jpg); */
-  /* background-image: url(../images/natalia-y-f6j5Dol1H_I-unsplash.jpg); */
-  /* background-image: url(../images/ranit-sarkar-u2PygwDnNiE-unsplash.jpg); */
-  background-image: url(../images/resized-sgc-sLIAshJEmu0-unsplash.JPG);
-  /* background-image: url(../images/thowei-wang-t1SUMYgqRng-unsplash.jpg); */
-  /* background-image: url(../images/tmike-enerio-2IkxeDKaZdY-unsplash.jpg); */
+ }
 
-    background-size: cover;
-    background-repeat: no-repeat;
-}
-    .jumbotron {
-    text-align: center;
-    background-color: #272b30; 
+
+
+
+ .jumbotron {
+   text-align: center;
+   background-color: #272b30; 
 }
 
 h1 {
