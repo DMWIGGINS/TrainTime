@@ -74,7 +74,7 @@ $(document).ready(function () {
          // Validate required fields
     if (!trainName || !destination || !firstTime || !frequency) {
         showAlert("Please fill in all fields before adding a train.", "danger");
-        
+        return;
     }
 
         var trainKey = formatKey(trainName);
@@ -185,7 +185,7 @@ $(document).ready(function () {
         $(option).attr("value", childSnapshot.val().trainname )
         $("#dropdown").append(option);
 
-        console.log("Value is " + $("#dropdown").val());
+        console.log("Value is " + $(option).val());
 
         // retrieve destination from database and append to position in table row
         var td2 = $("<td>").text(childSnapshot.val().destination);
@@ -212,10 +212,18 @@ $(document).ready(function () {
     const key = oldChildSnapshot.key;
      // Remove row from table
     $('tr[data-key="' + key + '"]').remove();
-    console.log("Train with key", key, "has been removed from table and dropdown.");
+
+    $('#dropdown option').each(function () {
+       if ($(this).val() === oldChildSnapshot.val().trainname) {
+           $(this).remove();
+       }
+
+    });
+    console.log("Train with key", key, "has been removed from table");
     });
 
-
+ dataBase.ref("trains").on("child_added", function (childSnapshot) {
+var newTableRow = $("<tr>").attr("data-key", childSnapshot.key);
    
 
 
@@ -352,3 +360,5 @@ $("#confirmDeleteBtn").on("click", function() {
              }); 
       
         });
+
+    });
