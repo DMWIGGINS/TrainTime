@@ -55,12 +55,6 @@ $(document).ready(function () {
   }, 4500); // then fade it out completely
 }
 
-
-
-        
-    
-
-
     // when submit button is clicked this function will be carried out
     $("#submit").on("click", function (event) {
         event.preventDefault();
@@ -77,8 +71,17 @@ $(document).ready(function () {
         return;
     }
 
+    frequency = Number(frequency);
+    if (frequency <= 0 || !Number.isInteger(frequency)) {
+        console.log("less than zero? ",  frequency <= 0);
+        console.log("not an integer? ",  !Number.isInteger(frequency))
+        showAlert("Please enter an integer greater than zero.", "danger");
+        return;
+    }
+
+
         var trainKey = formatKey(trainName);
-        console.log("TrainKey outside of function is " + trainKey);
+        //console.log("TrainKey outside of function is " + trainKey);
         // store values in our database
 
         dataBase.ref("trains/" + trainKey).once("value", function(snapshot) {
@@ -118,29 +121,29 @@ $(document).ready(function () {
     dataBase.ref("trains").on("child_added", function (childSnapshot) {
 
         // Log everything that's coming out of snapshot
-        console.log(childSnapshot.val().trainname);
-        console.log(childSnapshot.val().destination);
-        console.log(childSnapshot.val().firsttime);
-        console.log(childSnapshot.val().frequency);
+        //console.log("trainname " + childSnapshot.val().trainname);
+        //console.log("destination " + childSnapshot.val().destination);
+        //console.log("firstarrival " + childSnapshot.val().firsttime);
+        //console.log("frequency " + childSnapshot.val().frequency);
         
       // get current time
         currentTime = moment().format('HH:mm');
         var currentTimeHour = moment().format('HH');
         var currentTimeMin = moment().format('mm');
-        console.log(currentTime);
-        console.log(currentTimeHour);
-        console.log(currentTimeMin);
+        //console.log(currentTime);
+        //console.log(currentTimeHour);
+       // console.log(currentTimeMin);
 
 
         // set nextarrival to firstTime since they will be the same time for the first train
         nextArrival = (childSnapshot.val().firsttime);
-        console.log(nextArrival);
+        //console.log(nextArrival);
 
         var nextArrivalTime = moment(nextArrival, "HH:mm");
         var nextArrivalHour = moment(nextArrival, "HH:mm").format("HH");
         var nextArrivalMin = moment(nextArrival, "HH:mm").format("mm");
 
-        console.log(nextArrivalMin);
+        //console.log(nextArrivalMin);
 
 
         // create a loop that will compare the current time to the next Arrival time.
@@ -150,31 +153,31 @@ $(document).ready(function () {
             // we repeat this until we find the next Arrival time that is in the future 
             
             nextArrivalTime = moment(nextArrivalTime).add(childSnapshot.val().frequency, "minutes");
-            console.log(moment(nextArrivalTime).format("HH:mm"));
+            //console.log(moment(nextArrivalTime).format("HH:mm"));
 
         }
         // when the current time is before the next Arrival time then we calculate the difference in minutes and append that value to our table
 
         nextArrivalHour = moment(nextArrivalTime, "HH:mm").format("HH");
         nextArrivalMin = moment(nextArrivalTime, "HH:mm").format("mm");
-        console.log(nextArrivalHour);
-        console.log(nextArrivalMin);
-        console.log(currentTimeHour);
-        console.log(currentTimeMin);
-        console.log(nextArrivalHour * 60 + parseInt(nextArrivalMin));
-        console.log(currentTimeHour * 60 + parseInt(currentTimeMin));
+        //console.log(nextArrivalHour);
+        //console.log(nextArrivalMin);
+        //console.log(currentTimeHour);
+        //console.log(currentTimeMin);
+       // console.log(nextArrivalHour * 60 + parseInt(nextArrivalMin));
+        //console.log(currentTimeHour * 60 + parseInt(currentTimeMin));
         minutesAway = ((nextArrivalHour * 60) + parseInt(nextArrivalMin)) - ((currentTimeHour * 60) + parseInt(currentTimeMin));
 
         // if result is a negative number than next train is at midnight or after so need to add 1440 (24 * 60) to minutesAway for next day and bring to positive
         if (minutesAway < 0) {
             minutesAway = minutesAway + 1440;
         }
-        console.log(minutesAway);
+        //onsole.log(minutesAway);
 
         // create a new row in the table for the new train info
         
         var newTableRow = $("<tr>").attr("data-key", childSnapshot.key);
-        console.log("How may times will this happen?" + trainname);
+        //console.log("How may times will this happen?" + trainname);
        
         // retrieve trainname from database and append to position in table row
         var td1 = $("<td>").text(childSnapshot.val().trainname);
@@ -185,7 +188,7 @@ $(document).ready(function () {
         $(option).attr("value", childSnapshot.val().trainname )
         $("#dropdown").append(option);
 
-        console.log("Value is " + $(option).val());
+        //console.log("Value is " + $(option).val());
 
         // retrieve destination from database and append to position in table row
         var td2 = $("<td>").text(childSnapshot.val().destination);
@@ -219,7 +222,7 @@ $(document).ready(function () {
        }
 
     });
-    console.log("Train with key", key, "has been removed from table");
+    //console.log("Train with key", key, "has been removed from table");
     });
 
  dataBase.ref("trains").on("child_added", function (childSnapshot) {
@@ -231,7 +234,7 @@ var newTableRow = $("<tr>").attr("data-key", childSnapshot.key);
        
         var selectedtrainName = $(this).val();
         
-        console.log("TrainName is " + selectedtrainName);
+        //console.log("TrainName is " + selectedtrainName);
        
        dataBase.ref("trains/").orderByChild("trainname").equalTo(selectedtrainName).once("value", function(snapshot) {
         if (snapshot.exists()) {
@@ -243,7 +246,7 @@ var newTableRow = $("<tr>").attr("data-key", childSnapshot.key);
                 $("#existingfirsttime").val(trainData.firsttime);
                 $("#existingfrequency").val(trainData.frequency);
 
-                //Optional: store key for edit/delete buttons
+                // Store key for edit/delete buttons
                 $("#edit").data("key", childSnapshot.key);
                 $("#delete").data("key", childSnapshot.key);
 
@@ -268,6 +271,8 @@ $("#edit").on("click", function () {
     
     
       // Validate required fields
+
+
     if (!destination || !firstTime || !frequency) {
         showAlert("Please fill in all fields before editing a train.", "warning");
         return;
