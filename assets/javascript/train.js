@@ -65,25 +65,32 @@ $(document).ready(function () {
         firstTime = $("#firsttime").val().trim();
         frequency = $("#frequency").val().trim();
 
-         // Validate required fields
+         // Validate required fields are completed
     if (!trainName || !destination || !firstTime || !frequency) {
         showAlert("Please fill in all fields before adding a train.", "danger");
         return;
     }
 
+    // frequency field must be a positive integer
     frequency = Number(frequency);
     if (frequency <= 0 || !Number.isInteger(frequency)) {
         console.log("less than zero? ",  frequency <= 0);
-        console.log("not an integer? ",  !Number.isInteger(frequency))
+        console.log("not an integer? ",  !Number.isInteger(frequency));
         showAlert("Please enter an integer greater than zero.", "danger");
         return;
     }
 
+    // firstTime field must be in HH:MM format
+    const timeFormat = /^(0?[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
+
+    if (!timeFormat.test(firstTime)) {
+        showAlert("Please use HH:MM format for First Train Time.", "danger");
+        return;
+    }
 
         var trainKey = formatKey(trainName);
-        //console.log("TrainKey outside of function is " + trainKey);
+        // console.log("TrainKey outside of function is " + trainKey);
         // store values in our database
-
         dataBase.ref("trains/" + trainKey).once("value", function(snapshot) {
             if (snapshot.exists()) {
                 showAlert("A train with that name already exists.", "warning");
@@ -101,7 +108,7 @@ $(document).ready(function () {
             } else {
             showAlert("Train added successfully!", "success");
 
-            //remove focus from submit button when successfull
+            // remove focus from submit button when successfull
             $("#submit").blur();
         
         // clear values from form
@@ -121,23 +128,23 @@ $(document).ready(function () {
     dataBase.ref("trains").on("child_added", function (childSnapshot) {
 
         // Log everything that's coming out of snapshot
-        //console.log("trainname " + childSnapshot.val().trainname);
-        //console.log("destination " + childSnapshot.val().destination);
-        //console.log("firstarrival " + childSnapshot.val().firsttime);
-        //console.log("frequency " + childSnapshot.val().frequency);
+         console.log("trainname " + childSnapshot.val().trainname);
+         console.log("destination " + childSnapshot.val().destination);
+         console.log("firstarrival " + childSnapshot.val().firsttime);
+         console.log("frequency " + childSnapshot.val().frequency);
         
-      // get current time
+       // get current time
         currentTime = moment().format('HH:mm');
         var currentTimeHour = moment().format('HH');
         var currentTimeMin = moment().format('mm');
-        //console.log(currentTime);
-        //console.log(currentTimeHour);
-       // console.log(currentTimeMin);
+        // console.log(currentTime);
+        // console.log(currentTimeHour);
+        // console.log(currentTimeMin);
 
 
         // set nextarrival to firstTime since they will be the same time for the first train
         nextArrival = (childSnapshot.val().firsttime);
-        //console.log(nextArrival);
+        console.log("nextArrival " + nextArrival);
 
         var nextArrivalTime = moment(nextArrival, "HH:mm");
         var nextArrivalHour = moment(nextArrival, "HH:mm").format("HH");
@@ -153,42 +160,42 @@ $(document).ready(function () {
             // we repeat this until we find the next Arrival time that is in the future 
             
             nextArrivalTime = moment(nextArrivalTime).add(childSnapshot.val().frequency, "minutes");
-            //console.log(moment(nextArrivalTime).format("HH:mm"));
+            console.log("in while loop " + moment(nextArrivalTime).format("HH:mm"));
 
         }
         // when the current time is before the next Arrival time then we calculate the difference in minutes and append that value to our table
 
         nextArrivalHour = moment(nextArrivalTime, "HH:mm").format("HH");
         nextArrivalMin = moment(nextArrivalTime, "HH:mm").format("mm");
-        //console.log(nextArrivalHour);
-        //console.log(nextArrivalMin);
-        //console.log(currentTimeHour);
-        //console.log(currentTimeMin);
-       // console.log(nextArrivalHour * 60 + parseInt(nextArrivalMin));
-        //console.log(currentTimeHour * 60 + parseInt(currentTimeMin));
+        // console.log(nextArrivalHour);
+        // console.log(nextArrivalMin);
+        // console.log(currentTimeHour);
+        // console.log(currentTimeMin);
+        // console.log(nextArrivalHour * 60 + parseInt(nextArrivalMin));
+        // console.log(currentTimeHour * 60 + parseInt(currentTimeMin));
         minutesAway = ((nextArrivalHour * 60) + parseInt(nextArrivalMin)) - ((currentTimeHour * 60) + parseInt(currentTimeMin));
 
         // if result is a negative number than next train is at midnight or after so need to add 1440 (24 * 60) to minutesAway for next day and bring to positive
         if (minutesAway < 0) {
             minutesAway = minutesAway + 1440;
         }
-        //onsole.log(minutesAway);
+        // console.log(minutesAway);
 
         // create a new row in the table for the new train info
         
         var newTableRow = $("<tr>").attr("data-key", childSnapshot.key);
-        //console.log("How may times will this happen?" + trainname);
+        // console.log("How may times will this happen?" + trainname);
        
         // retrieve trainname from database and append to position in table row
         var td1 = $("<td>").text(childSnapshot.val().trainname);
         $(newTableRow).append(td1);
 
-         //add trainname to the dropdown list in the edit/delete section
+         // add trainname to the dropdown list in the edit/delete section
         var option = $("<option>").text(childSnapshot.val().trainname);
         $(option).attr("value", childSnapshot.val().trainname )
         $("#dropdown").append(option);
 
-        //console.log("Value is " + $(option).val());
+        // console.log("Value is " + $(option).val());
 
         // retrieve destination from database and append to position in table row
         var td2 = $("<td>").text(childSnapshot.val().destination);
@@ -210,7 +217,7 @@ $(document).ready(function () {
         $("#traintable").append(newTableRow);    
     });
 
-    //listener for deleted data
+    // listener for deleted data
     dataBase.ref("trains").on("child_removed", function (oldChildSnapshot) {
     const key = oldChildSnapshot.key;
      // Remove row from table
@@ -222,7 +229,7 @@ $(document).ready(function () {
        }
 
     });
-    //console.log("Train with key", key, "has been removed from table");
+    // console.log("Train with key", key, "has been removed from table");
     });
 
  dataBase.ref("trains").on("child_added", function (childSnapshot) {
@@ -234,7 +241,7 @@ var newTableRow = $("<tr>").attr("data-key", childSnapshot.key);
        
         var selectedtrainName = $(this).val();
         
-        //console.log("TrainName is " + selectedtrainName);
+        // console.log("TrainName is " + selectedtrainName);
        
        dataBase.ref("trains/").orderByChild("trainname").equalTo(selectedtrainName).once("value", function(snapshot) {
         if (snapshot.exists()) {
@@ -360,9 +367,24 @@ $("#confirmDeleteBtn").on("click", function() {
         $("#existingfirsttime").val('');
         $("#existingfrequency").val('');
 
-
-
              }); 
+
+
+// clear values from form with reset button (Add Train)
+     $("#resetAdd").on("click", function () {
+        $("#trainname").val('');
+        $("#destination").val('');
+        $("#firsttime").val('');
+        $("#frequency").val('');
+             });
+
+// clear values from form with reset button (Edit/Delete Train)
+     $("#resetExisting").on("click", function () {
+        $("#dropdown").val('');
+        $("#existingdestination").val('');
+        $("#existingfirsttime").val('');
+        $("#existingfrequency").val('');
+             });
       
         });
 

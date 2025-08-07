@@ -73,6 +73,9 @@ h1 {
   top: 0;
 }
 
+#resetAdd, #resetExisting{
+  float: right;
+}
 
 @media (max-width: 452px) {
   #image1, #image3,
