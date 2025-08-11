@@ -1,59 +1,51 @@
-
-
-
-
-
-
-body { 
- 
+body {
   /* image ratio is 16:9 */
-   background-image: url(../images/outdoors_railroad_tracks_foliage_hd-wallpaper-936158.JPG); 
-   background-size: cover;
-   background-repeat: no-repeat;
-   background-position: center;
-   overflow-x: hidden;
+  background-image: url(../images/outdoors_railroad_tracks_foliage_hd-wallpaper-936158.JPG);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  overflow-x: hidden;
+}
 
- }
-
-
-
-
- .jumbotron {
-   text-align: center;
-   background-color: #272b30; 
+.jumbotron {
+  text-align: center;
+  background-color: #272b30;
 }
 
 h1 {
-    float: center;
+  float: center;
 }
 
-#image1, #image4 {
-    height: 100px;
-    width: 175px;
-    float: left;
-    border-style: solid;
-    border-color: grey;
-    border-width: 1px;
+#image1,
+#image4 {
+  height: 100px;
+  width: 175px;
+  float: left;
+  border-style: solid;
+  border-color: grey;
+  border-width: 1px;
 }
 
-#image3, #image6 {
-    height: 100px;
-    width: 175px;
-    float: right;
-    border-style: solid;
-    border-color: grey;
-    border-width: 1px;
+#image3,
+#image6 {
+  height: 100px;
+  width: 175px;
+  float: right;
+  border-style: solid;
+  border-color: grey;
+  border-width: 1px;
 }
 
-#image2, #image5 {
-    height: 100px;
-    width: 100px;
-    border-style: solid;
-    border-color: grey;
-    border-width: 1px;
+#image2,
+#image5 {
+  height: 100px;
+  width: 100px;
+  border-style: solid;
+  border-color: grey;
+  border-width: 1px;
 }
 
-
+/* Alerts */
 #message {
   position: fixed;
   top: -100px; /* start hidden above screen */
@@ -73,33 +65,35 @@ h1 {
   top: 0;
 }
 
-#resetAdd, #resetExisting{
+#resetAdd,
+#resetExisting {
   float: right;
 }
 
-@media (max-width: 452px) {
-  #image1, #image3,
-  #image4, #image6 {
+@media screen and (max-width: 452px) {
+  #image1,
+  #image3,
+  #image4,
+  #image6 {
     width: 80px;
     height: 60px;
     margin: 4px;
   }
 
-  #image2, #image5 {
+  #image2,
+  #image5 {
     width: 80px;
     height: 80px;
   }
-#traintable {
+  #traintable {
     table-layout: fixed;
-    font-size: 10px; 
-   
-}
-td {
+    font-size: 10px;
+  }
+  td {
     text-align: center;
-}
+  }
 
- tr {
-  text-align: center; 
-} 
-
+  tr {
+    text-align: center;
+  }
 }
