@@ -1,6 +1,6 @@
 # TrainTime
 
-       ![train schedule for Reading Railroad](images/trainschedulethumbnail.png)
+![train schedule for Reading Railroad](https://github.com/DMWIGGINS/TrainTime/blob/master/assets/images/trainschedulethumbnail.png)
 
 
 
@@ -13,3 +13,6 @@ I have added functionality to edit and delete trains, reset the form and some mu
 Feel free to test it out!!
 
 _Made with Firebase, HTML, CSS, Javascript, jQuery._
+
+
+
