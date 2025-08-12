@@ -145,7 +145,7 @@ $(document).ready(function () {
     });
   });
 
-  // listener for added trains
+  // listener for added trains, calculates next arrival time and appends new train info to display
   dataBase.ref("trains").on("child_added", function (childSnapshot) {
 
     // get current time
@@ -207,7 +207,7 @@ $(document).ready(function () {
     $("#traintable").append(newTableRow);
   });
 
-  // listener for deleted train
+  // listener for deleted train, removes train from database, display and dropdown
   dataBase.ref("trains").on("child_removed", function (oldChildSnapshot) {
     const key = oldChildSnapshot.key;
     // Remove row from table
@@ -220,9 +220,9 @@ $(document).ready(function () {
     });
   });
 
+  // listener for edit/delete form, triggered when selection is made in dropdown 
   dataBase.ref("trains").on("child_added", function (childSnapshot) {
-    //check this
-    newTableRow = $("<tr>").attr("data-key", childSnapshot.key); //check this
+    newTableRow = $("<tr>").attr("data-key", childSnapshot.key); 
     $("#dropdown").on("input", function (event) {
       event.preventDefault();
       const selectedtrainName = $(this).val();
@@ -248,6 +248,8 @@ $(document).ready(function () {
           }
         });
     });
+
+    // captures key from edit button, validates fields 
     $("#edit").on("click", function (event) {
       event.preventDefault();
       const key = $(this).data("key");
@@ -272,7 +274,7 @@ $(document).ready(function () {
         firsttime: firstTime,
         frequency: frequency,
       };
-
+      // locates and updates fields to be edited in database and display
       dataBase.ref("trains/" + key).update(updatedData, function (error) {
         if (error) {
           showAlert("Update failed.", "danger");
@@ -316,6 +318,7 @@ $(document).ready(function () {
     // let to store key temporarily
     let deleteKey = "";
 
+    // captures key from delete button, validates dropdown value exists
     $("#delete").on("click", function (event) {
       event.preventDefault();
       deleteKey = $(this).data("key");
@@ -327,9 +330,11 @@ $(document).ready(function () {
       }
     });
 
+    // if user selects Cancel on confirmModal
     $("#confirmDeleteBtn").on("click", function () {
       if (!deleteKey) return;
-
+    
+    // if user selects Delete, train is removed from database
       dataBase.ref("trains/" + deleteKey).remove(function (error) {
         if (error) {
           showAlert("Delete failed.", "danger");
